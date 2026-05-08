@@ -6,6 +6,18 @@ FORECAST_HOUR_INDEX = 4  # Around midday in wttr.in hourly blocks
 
 
 def fetch_weather(location: str | None = None) -> dict:
+    """Fetch weather JSON from wttr.in for a location or current IP location.
+
+    Args:
+        location: Optional city/location text. If None, wttr.in resolves by requester IP.
+
+    Returns:
+        Parsed JSON payload as a dictionary.
+
+    Raises:
+        ValueError: If the weather service returns an HTTP error or invalid JSON.
+        requests.RequestException: If the network request fails.
+    """
     endpoint = "https://wttr.in/"
     query = quote(location.strip(), safe="") if location else ""
     url = f"{endpoint}{query}?format=j1"
@@ -24,6 +36,12 @@ def fetch_weather(location: str | None = None) -> dict:
 
 
 def safe_get(data: dict, *keys, default: str = "N/A") -> str:
+    """Safely traverse nested dict/list structures and return a string value.
+
+    The function applies each key/index in order. For list values, integer keys are
+    treated as indexes; for dict values, keys are looked up by name. If traversal
+    fails at any point, the provided default value is returned.
+    """
     current = data
     for key in keys:
         if isinstance(current, list):
