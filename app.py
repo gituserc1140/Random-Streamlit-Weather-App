@@ -11,11 +11,15 @@ def fetch_weather(location: str | None = None) -> dict:
     response = requests.get(url, timeout=10)
     try:
         response.raise_for_status()
+        return response.json()
     except requests.HTTPError as exc:
         raise ValueError(
             "Weather service returned an unexpected response. Please try again."
         ) from exc
-    return response.json()
+    except ValueError as exc:
+        raise ValueError(
+            "Weather service sent invalid data. Please try again in a moment."
+        ) from exc
 
 
 def safe_get(data: dict, *keys, default: str = "N/A") -> str:
