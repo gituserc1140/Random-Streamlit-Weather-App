@@ -1,6 +1,8 @@
 import requests
 import streamlit as st
 
+FORECAST_HOUR_INDEX = 4  # Around midday in wttr.in hourly blocks
+
 
 def fetch_weather(location: str | None = None) -> dict:
     endpoint = "https://wttr.in/"
@@ -79,7 +81,7 @@ for day in data.get("weather", [])[:3]:
     max_temp = day.get("maxtempC", "N/A")
     min_temp = day.get("mintempC", "N/A")
     avg_humidity = day.get("avgHumidity", "N/A")
-    summary = safe_get(day, "hourly", 4, "weatherDesc", 0, "value")
+    summary = safe_get(day, "hourly", FORECAST_HOUR_INDEX, "weatherDesc", 0, "value")
 
     with st.container(border=True):
         st.write(f"**{date}**")
