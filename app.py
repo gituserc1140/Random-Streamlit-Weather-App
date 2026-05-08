@@ -1,12 +1,13 @@
 import requests
 import streamlit as st
+from urllib.parse import quote
 
 FORECAST_HOUR_INDEX = 4  # Around midday in wttr.in hourly blocks
 
 
 def fetch_weather(location: str | None = None) -> dict:
     endpoint = "https://wttr.in/"
-    query = location.strip() if location else ""
+    query = quote(location.strip(), safe="") if location else ""
     url = f"{endpoint}{query}?format=j1"
     response = requests.get(url, timeout=10)
     try:
@@ -16,7 +17,7 @@ def fetch_weather(location: str | None = None) -> dict:
         raise ValueError(
             "Weather service returned an unexpected response. Please try again."
         ) from exc
-    except ValueError as exc:
+    except requests.exceptions.JSONDecodeError as exc:
         raise ValueError(
             "Weather service sent invalid data. Please try again in a moment."
         ) from exc
