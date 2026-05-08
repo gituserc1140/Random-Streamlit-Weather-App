@@ -95,11 +95,11 @@ for day in data.get("weather", [])[:3]:
     date = day.get("date", "Unknown date")
     max_temp = day.get("maxtempC", "N/A")
     min_temp = day.get("mintempC", "N/A")
-    avg_humidity = day.get("avgHumidity", "N/A")
+    avg_temp = day.get("avgtempC", "N/A")
     summary = safe_get(day, "hourly", FORECAST_HOUR_INDEX, "weatherDesc", 0, "value")
 
     with st.container(border=True):
         st.write(f"**{date}**")
         st.write(f"High: {max_temp} °C  |  Low: {min_temp} °C")
-        st.write(f"Avg Humidity: {avg_humidity}%")
+        st.write(f"Average Temperature: {avg_temp} °C")
         st.write(f"Summary: {summary}")
