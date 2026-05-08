@@ -9,7 +9,12 @@ def fetch_weather(location: str | None = None) -> dict:
     query = location.strip() if location else ""
     url = f"{endpoint}{query}?format=j1"
     response = requests.get(url, timeout=10)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as exc:
+        raise ValueError(
+            "Weather service returned an unexpected response. Please try again."
+        ) from exc
     return response.json()
 
 
@@ -51,8 +56,13 @@ else:
 
 try:
     data = fetch_weather(location_query)
+except ValueError as exc:
+    st.error(str(exc))
+    st.stop()
 except requests.RequestException as exc:
-    st.error(f"Could not fetch weather data: {exc}")
+    st.error(
+        "Could not connect to the weather service. Check your internet connection and try again."
+    )
     st.stop()
 
 area = safe_get(data, "nearest_area", 0, "areaName", 0, "value")
