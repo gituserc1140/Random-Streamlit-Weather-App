@@ -2,7 +2,7 @@ import requests
 import streamlit as st
 from urllib.parse import quote
 
-FORECAST_HOUR_INDEX = 4  # Around midday in wttr.in hourly blocks
+FORECAST_HOUR_INDEX = 4  # ~12:00 PM in wttr.in 3-hour blocks starting at 00:00
 
 
 def fetch_weather(location: str | None = None) -> dict:
@@ -35,7 +35,7 @@ def fetch_weather(location: str | None = None) -> dict:
         ) from exc
 
 
-def safe_get(data: dict, *keys, default: str = "N/A") -> str:
+def safe_get(data: dict | list, *keys, default: str = "N/A") -> str:
     """Safely traverse nested dict/list structures and return a string value.
 
     The function applies each key/index in order. For list values, integer keys are
